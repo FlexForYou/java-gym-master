@@ -6,6 +6,7 @@ import java.util.*;
 public class Timetable {
 
     private final Map<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable = new HashMap<>();
+    private final TreeMap<Coach, Integer> coachesCounter = new TreeMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
 
@@ -15,7 +16,12 @@ public class Timetable {
                 new ArrayList<>());
         trainingSessionList.add(trainingSession);
         trainingSessionsMap.put(trainingSession.getTimeOfDay(), trainingSessionList);
+
+        Coach currentCoach = trainingSession.getCoach();
+        coachesCounter.put(currentCoach, coachesCounter.getOrDefault(currentCoach, 0) + 1);
+
         timetable.put(trainingSession.getDayOfWeek(), trainingSessionsMap);
+
 
     }
 
@@ -36,15 +42,7 @@ public class Timetable {
     }
 
     public TreeMap<Coach, Integer> getCountByCoaches() {
-        TreeMap<Coach, Integer> coaches = new TreeMap<>();
-        for (TreeMap<TimeOfDay, List<TrainingSession>> trainingSessionTreeMap : timetable.values()) {
-            for (List<TrainingSession> trainingSessionList : trainingSessionTreeMap.values()) {
-                for (TrainingSession trainingSession : trainingSessionList) {
-                    Coach coach = trainingSession.getCoach();
-                    coaches.put(coach, coaches.getOrDefault(coach, 0) + 1);
-                }
-            }
-        }
-        return coaches;
+        return this.coachesCounter;
     }
+
 }
